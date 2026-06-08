@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>
+    💰 Financeiro
+</h2>
+
+<h4>
+    {{ trip.title }}
+</h4>
+
+<hr>
+
+<div class="row mb-4">
+
+    <div class="col-md-4">
+
+        <div class="card">
+
+            <div class="card-body">
+
+                <h6>Entradas</h6>
+
+                <h3>
+                    R$ {{ trip.total_income }}
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card">
+
+            <div class="card-body">
+
+                <h6>Saídas</h6>
+
+                <h3>
+                    R$ {{ trip.total_expense }}
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card">
+
+            <div class="card-body">
+
+                <h6>Saldo</h6>
+
+                <h3>
+                    R$ {{ trip.available_balance }}
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<hr>
+
+<form
+    method="post"
+    action="{% url 'add_transaction' trip.id %}"
+>
+
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button
+        class="btn btn-primary"
+    >
+        Adicionar
+    </button>
+
+</form>
+
+<hr>
+
+<table class="table">
+
+    <thead>
+
+        <tr>
+
+            <th>Tipo</th>
+
+            <th>Categoria</th>
+
+            <th>Descrição</th>
+
+            <th>Valor</th>
+
+            <th>Data</th>
+
+            <th></th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+    {% for transaction in transactions %}
+
+        <tr>
+
+            <td>
+                {{ transaction.transaction_type }}
+            </td>
+
+            <td>
+                {{ transaction.category }}
+            </td>
+
+            <td>
+                {{ transaction.description }}
+            </td>
+
+            <td>
+                R$ {{ transaction.amount }}
+            </td>
+
+            <td>
+                {{ transaction.transaction_date }}
+            </td>
+
+            <td>
+
+                <a
+                    href="{% url 'delete_transaction' transaction.id %}"
+                    class="btn btn-danger btn-sm"
+                >
+                    Excluir
+                </a>
+
+            </td>
+
+        </tr>
+
+    {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}

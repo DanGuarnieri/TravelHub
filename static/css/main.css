@@ -1,0 +1,222 @@
+body{
+    background:#f8fafc;
+    font-family:'Segoe UI',sans-serif;
+}
+
+.sidebar{
+    width:280px;
+    height:100vh;
+    position:fixed;
+
+    background:linear-gradient(
+        180deg,
+        #0f172a,
+        #1e293b
+    );
+
+    padding:30px;
+
+    border-right:1px solid rgba(255,255,255,.08);
+}
+
+.logo{
+
+    color:white;
+
+    font-size:32px;
+
+    font-weight:800;
+
+    letter-spacing:-1px;
+
+    margin-bottom:10px;
+}
+.sidebar a{
+
+    display:block;
+
+    color:#cbd5e1;
+
+    text-decoration:none;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    margin-bottom:5px;
+}
+.sidebar-subtitle{
+
+    color:#94a3b8;
+
+    font-size:14px;
+
+    margin-bottom:35px;
+}
+
+.sidebar a:hover{
+
+    background:#1e293b;
+
+    color:white;
+}
+
+.content{
+
+    margin-left:280px;
+
+    padding:40px;
+}
+
+.trip-card{
+
+    background:white;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+    transition:.3s;
+}
+
+.trip-card:hover{
+
+    transform:translateY(-8px);
+}
+
+.hero-trip{
+
+    position:relative;
+
+    height:420px;
+
+    border-radius:25px;
+
+    overflow:hidden;
+
+    margin-bottom:40px;
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,.15);
+}
+.hero-trip::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+    linear-gradient(
+        to top,
+        rgba(0,0,0,.7),
+        rgba(0,0,0,.2)
+    );
+}
+
+.hero-image{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.hero-overlay{
+
+    position:absolute;
+
+    left:40px;
+
+    bottom:40px;
+
+    z-index:2;
+
+    color:white;
+}
+
+.hero-overlay h1{
+
+    font-size:56px;
+
+    font-weight:800;
+
+    margin-bottom:5px;
+}
+
+.kpi-card{
+
+    border:none;
+
+    border-radius:20px;
+
+    background:white;
+
+    box-shadow:
+    0 8px 20px rgba(0,0,0,.06);
+
+    transition:.3s;
+}
+
+.kpi-card:hover{
+
+    transform:translateY(-5px);
+}
+
+.kpi-card h4{
+
+    font-size:32px;
+
+    font-weight:700;
+}
+
+.module-card{
+
+    background:white;
+
+    border:none;
+
+    border-radius:20px;
+
+    min-height:180px;
+
+    transition:.3s;
+}
+
+.module-card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,.08);
+}
+
+.hero-badge{
+    background:rgba(255,255,255,.2);
+    padding:8px 16px;
+    border-radius:999px;
+    backdrop-filter:blur(10px);
+}
+
+.hero-meta{
+    display:flex;
+    gap:20px;
+    margin-top:15px;
+}
+.module-icon{
+    font-size:42px;
+    margin-bottom:15px;
+}
+
+.page-header{
+
+    margin-bottom:40px;
+}
+
+.page-header h1{
+
+    font-size:42px;
+
+    font-weight:800;
+}

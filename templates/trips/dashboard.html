@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header">
+    <h1>
+        👋 Bem-vindo ao TravelHub
+    </h1>
+    <p>
+        Organize suas viagens, documentos e memórias.
+    </p>
+</div>
+<div class="row">
+    <div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+                <h6>Total de Viagens</h6>
+                <h2>{{ total_trips }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="row">
+    {% for trip in trips %}
+    <div class="col-md-4 mb-4">
+        <a href="{% url 'trip_detail' trip.id %}"
+           class="text-decoration-none text-dark">
+            <div class="trip-card">
+
+                {% if trip.cover_image %}
+                    <img src="{{ trip.cover_image.url }}"
+                         class="trip-cover">
+                {% endif %}
+
+                <div class="trip-content">
+
+                    <div class="trip-header">
+
+                        <h3>{{ trip.title }}</h3>
+
+                        <span class="status-badge">
+                            {{ trip.status }}
+                        </span>
+
+                    </div>
+
+                    <p class="destination">
+                        🌍 {{ trip.destination }}
+                    </p>
+
+                    <div class="trip-footer">
+
+                        <span>
+                            ⏳ {{ trip.days_remaining }} dias
+                        </span>
+
+                        <span>
+                            💰 R$ {{ trip.budget }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

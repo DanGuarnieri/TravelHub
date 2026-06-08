@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>TravelHub</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/css/main.css">
+
+</head>
+
+<body>
+
+<div class="d-flex">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            ✈ TravelHub
+        </div>
+        <p class="sidebar-subtitle">
+            Seu centro de viagens
+        </p>
+
+        <hr>
+
+        <ul>
+
+            <li>
+                <a href="{% url 'dashboard' %}">
+                    🏠 Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'create_trip' %}">
+                   🧳 Nova Viagem
+                </a>
+            </li>
+
+        </ul>
+    </aside>
+
+    <main class="content">
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+</div>
+
+</body>
+</html>

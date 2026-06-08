@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>🗺️ Roteiro</h2>
+
+<h4>{{ trip.title }}</h4>
+
+<hr>
+
+<form
+    method="post"
+    action="{% url 'add_day' trip.id %}"
+>
+
+    {% csrf_token %}
+
+    {{ day_form.as_p }}
+
+    <button class="btn btn-primary">
+        Adicionar Dia
+    </button>
+
+</form>
+
+<hr>
+
+{% for day in days %}
+
+<div class="card mb-4">
+
+    <div class="card-body">
+
+        <h4>
+            {{ day.date }}
+        </h4>
+
+        {% for activity in day.activities.all %}
+
+            <div class="border p-2 mb-2">
+
+                <strong>
+                    {{ activity.title }}
+                </strong>
+
+                <br>
+
+                📍 {{ activity.location }}
+
+            </div>
+
+        {% empty %}
+
+            <p>
+                Nenhuma atividade.
+            </p>
+
+        {% endfor %}
+
+        <form
+            method="post"
+            action="{% url 'add_activity' day.id %}"
+        >
+
+            {% csrf_token %}
+
+            <input
+                type="text"
+                name="title"
+                placeholder="Atividade"
+                required
+            >
+
+            <input
+                type="text"
+                name="location"
+                placeholder="Local"
+            >
+
+            <button
+                class="btn btn-success"
+            >
+                Adicionar
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+{% endblock %}

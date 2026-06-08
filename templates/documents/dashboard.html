@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>📄 Documentos</h2>
+
+<h4>{{ trip.title }}</h4>
+
+<hr>
+
+<form
+    method="post"
+    enctype="multipart/form-data"
+    action="{% url 'upload_document' trip.id %}"
+>
+
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button
+        class="btn btn-primary"
+    >
+        Upload
+    </button>
+
+</form>
+
+<hr>
+
+{% for doc in documents %}
+
+<div class="card mb-2">
+
+    <div class="card-body d-flex justify-content-between">
+
+        <div>
+
+            <strong>
+                {{ doc.title }}
+            </strong>
+
+            <br>
+
+            {{ doc.get_category_display }}
+
+        </div>
+
+        <div>
+
+            <a
+                href="{{ doc.file.url }}"
+                target="_blank"
+                class="btn btn-success"
+            >
+                Abrir
+            </a>
+
+            <a
+                href="{% url 'delete_document' doc.id %}"
+                class="btn btn-danger"
+            >
+                Excluir
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+{% endblock %}
