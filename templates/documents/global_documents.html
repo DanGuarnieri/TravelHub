@@ -6,17 +6,14 @@
     
     <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between mb-4 gap-3">
         <div>
-            <a href="{% url 'trip_detail' trip.id %}" class="text-decoration-none text-muted mb-2 d-inline-block">
-                <i class="bi bi-arrow-left me-1"></i> Voltar para a Viagem
-            </a>
             <h2 class="fw-bold mb-0 text-dark">
-                <i class="bi bi-file-earmark-text text-info me-2"></i>Documentos
+                <i class="bi bi-shield-lock text-primary me-2"></i>Meus Documentos
             </h2>
-            <p class="text-muted fs-5 mb-0">{{ trip.title }}</p>
+            <p class="text-muted fs-5 mb-0">O seu cofre pessoal de arquivos importantes.</p>
         </div>
         
-        <button type="button" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#uploadDocModal">
-            <i class="bi bi-cloud-arrow-up me-2"></i>Fazer Upload
+        <button type="button" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#uploadGlobalDocModal">
+            <i class="bi bi-cloud-arrow-up me-2"></i>Novo Documento
         </button>
     </div>
 
@@ -27,8 +24,8 @@
                 <div class="card-body p-4 d-flex flex-column">
                     
                     <div class="d-flex align-items-start gap-3 mb-3">
-                        <div class="bg-info-subtle text-info rounded-3 p-3 d-flex align-items-center justify-content-center">
-                            <i class="bi bi-file-earmark-pdf fs-2"></i>
+                        <div class="bg-primary-subtle text-primary rounded-3 p-3 d-flex align-items-center justify-content-center">
+                            <i class="bi bi-file-person fs-2"></i>
                         </div>
                         
                         <div class="flex-grow-1 overflow-hidden">
@@ -53,10 +50,10 @@
         {% empty %}
         <div class="col-12">
             <div class="text-center py-5 bg-white rounded-4 shadow-sm border-0">
-                <i class="bi bi-folder2-open text-muted" style="font-size: 4rem;"></i>
-                <h5 class="fw-bold mt-3 text-dark">Nenhum documento anexado</h5>
-                <p class="text-muted mb-4">Guarde aqui suas passagens, vouchers e seguros viagem.</p>
-                <button type="button" class="btn btn-outline-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#uploadDocModal">
+                <i class="bi bi-safe text-muted" style="font-size: 4rem;"></i>
+                <h5 class="fw-bold mt-3 text-dark">O seu cofre está vazio</h5>
+                <p class="text-muted mb-4">Guarde aqui cópias do seu passaporte, Identidade, Vistos e outros documentos gerais.</p>
+                <button type="button" class="btn btn-outline-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#uploadGlobalDocModal">
                     <i class="bi bi-cloud-arrow-up me-2"></i>Fazer Primeiro Upload
                 </button>
             </div>
@@ -66,16 +63,16 @@
 
 </div>
 
-<div class="modal fade" id="uploadDocModal" tabindex="-1" aria-labelledby="uploadDocModalLabel" aria-hidden="true">
+<div class="modal fade" id="uploadGlobalDocModal" tabindex="-1" aria-labelledby="uploadGlobalDocModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 border-0 shadow">
             
             <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
-                <h5 class="modal-title fw-bold text-dark" id="uploadDocModalLabel">Novo Documento</h5>
+                <h5 class="modal-title fw-bold text-dark" id="uploadGlobalDocModalLabel">Adicionar Documento Pessoal</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
             
-            <form method="post" enctype="multipart/form-data" action="{% url 'upload_document' trip.id %}">
+            <form method="post" enctype="multipart/form-data" action="{% url 'upload_global_document' %}">
                 <div class="modal-body px-4 py-3">
                     {% csrf_token %}
                     {{ form|crispy }}
@@ -84,7 +81,7 @@
                 <div class="modal-footer border-top-0 px-4 pb-4 pt-0">
                     <button type="button" class="btn btn-light rounded-pill px-4 fw-medium" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary rounded-pill px-4 fw-medium shadow-sm">
-                        <i class="bi bi-cloud-arrow-up me-1"></i> Salvar
+                        <i class="bi bi-cloud-arrow-up me-1"></i> Salvar no Cofre
                     </button>
                 </div>
             </form>

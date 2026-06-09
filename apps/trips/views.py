@@ -1,7 +1,9 @@
 from .models import Trip
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import TripForm
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def trip_detail(request, trip_id):
 
     trip = get_object_or_404(
@@ -26,7 +28,7 @@ def trip_detail(request, trip_id):
         "trips/trip_detail.html",
         context
     )
-
+@login_required
 def dashboard(request):
 
     trips = Trip.objects.all()
@@ -42,7 +44,7 @@ def dashboard(request):
         "trips/dashboard.html",
         context
     )
-
+@login_required
 def create_trip(request):
 
     if request.method == "POST":

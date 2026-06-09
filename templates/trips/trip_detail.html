@@ -1,267 +1,148 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-<div class="hero-trip">
-
+<div class="hero-trip rounded-4 mb-4">
     {% if trip.cover_image %}
-        <img src="{{ trip.cover_image.url }}"
-             class="hero-image">
+        <img src="{{ trip.cover_image.url }}" class="hero-image" alt="Capa de {{ trip.title }}">
+    {% else %}
+        <div class="hero-image bg-dark-gradient w-100 h-100"></div>
     {% endif %}
 
     <div class="hero-overlay">
-        <span class="hero-badge">
-            ✈ Próxima viagem
+        <span class="badge bg-light text-dark rounded-pill mb-3 px-3 py-2 fw-medium shadow-sm">
+            <i class="bi bi-airplane-fill me-1 text-primary"></i> Viagem Ativa
         </span>
-
-        <h1>{{ trip.title }}</h1>
-
-        <p class="hero-destination">
-        🌍 {{ trip.destination }}
+        <h1 class="display-5 fw-bold text-white mb-2">{{ trip.title }}</h1>
+        <p class="fs-5 text-light mb-0">
+            <i class="bi bi-geo-alt-fill text-danger me-1"></i> {{ trip.destination }}
         </p>
-        <div class="hero-meta">
-
-            <span>
-                📅 {{ trip.start_date }}
-            </span>
-
-
-       <span>
-            → {{ trip.end_date }}
-        </span>
-
-        <span>
-            ⏳ {{ trip.days_remaining }} dias
-        </span>
-
     </div>
-
-</div>
 </div>
 
-<div class="row mb-4">
-
-    <div class="col-md-3">
-
-        <div class="card shadow-sm kpi-card">
-
-            <div class="card-body">
-
-                <h6>⏳ Dias Restantes</h6>
-
-                <h4>{{ trip.days_remaining }}</h4>
-
-            </div>
-
-        </div>
-
+<div class="mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-1">
+        <span class="text-muted text-uppercase fw-bold small">Preparação da Viagem</span>
+        <span class="fw-bold text-primary">{{ trip.preparation_progress }}%</span>
     </div>
-
-    <div class="col-md-3">
-
-        <div class="card shadow-sm kpi-card">
-
-            <div class="card-body">
-
-                <h6>💰 Orçamento</h6>
-
-                <h4>R$ {{ trip.budget }}</h4>
-
-            </div>
-
-        </div>
-
+    <div class="progress rounded-pill shadow-sm" style="height: 8px;">
+        <div class="progress-bar bg-primary" role="progressbar" style="width: {{ trip.preparation_progress }}%"></div>
     </div>
-
-    <div class="col-md-3">
-
-        <div class="card shadow-sm kpi-card">
-
-            <div class="card-body">
-
-                <h6>📅 Início</h6>
-
-                <h5>{{ trip.start_date }}</h5>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="col-md-3">
-
-        <div class="card shadow-sm kpi-card">
-
-            <div class="card-body">
-
-                <h6>🏁 Fim</h6>
-
-                <h5>{{ trip.end_date }}</h5>
-
-            </div>
-
-        </div>
-
-    </div>
-
 </div>
 
-<hr class="my-4">
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+            <div class="card-body p-3 text-center">
+                <i class="bi bi-hourglass-split text-warning fs-4 mb-1"></i>
+                <h3 class="fw-bold mb-0 fs-4">{{ trip.days_remaining }}</h3>
+                <span class="text-muted small">Dias Restantes</span>
+            </div>
+        </div>
+    </div>
+  
+   <div class="col-6 col-lg-3">
+        <div class="card kpi-card h-100 border-0 shadow-sm rounded-4 bg-white">
+            <div class="card-body p-3 text-center">
+                <i class="bi bi-wallet2 text-danger fs-3 mb-2 d-block"></i>
+                <h6 class="text-muted small mb-1">Total Gasto</h6>
+                <h4 class="fw-bold mb-0 text-danger">R$ {{ trip.total_expense }}</h4>
+                <small class="text-muted fw-medium" style="font-size: 0.75rem;">
+                    de R$ {{ trip.budget }} (Orçamento)
+                </small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card kpi-card h-100 border-0 shadow-sm rounded-4">
+            <div class="card-body p-3 text-center">
+                <i class="bi bi-calendar-check text-primary fs-3 mb-2 d-block"></i>
+                <h6 class="text-muted small mb-1">Início</h6>
+                <h5 class="fw-bold mb-0">{{ trip.start_date|date:"d/m/Y" }}</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card kpi-card h-100 border-0 shadow-sm rounded-4">
+            <div class="card-body p-3 text-center">
+                <i class="bi bi-flag text-danger fs-3 mb-2 d-block"></i>
+                <h6 class="text-muted small mb-1">Fim</h6>
+                <h5 class="fw-bold mb-0">{{ trip.end_date|date:"d/m/Y" }}</h5>
+            </div>
+        </div>
+    </div>
+</div>
 
-<div class="row">
+<h4 class="fw-bold mb-4">Módulos da Viagem</h4>
 
-    <div class="col-md-3">
-
-        <div class="card module-card">
-
-            <a
-                href="{% url 'checklist_list' trip.id %}"
-                class="text-decoration-none"
-            >
-
-                <div class="card module-card">
-
-                    <div class="card-body">
-
-                       <h1 class="module-icon">📋</h1>
-                            <h5>Checklist</h5>
-                        <h3>
-
-                            {{ completed_count }}/{{ checklist_count }}
-
-                        </h3>
-
-                        <small>
-
-                            itens concluídos
-
-                        </small>
-
+<div class="row g-4">
+    <div class="col-12 col-sm-6 col-xl-3">
+        <a href="{% url 'itinerary_dashboard' trip.id %}" class="text-decoration-none">
+            <div class="card module-card h-100 border-0 shadow-sm rounded-4 text-center p-4">
+                <div class="card-body p-0">
+                    <div class="bg-primary-subtle text-primary rounded-circle d-inline-block p-3 mb-3">
+                        <i class="bi bi-map fs-1"></i>
                     </div>
-
+                    <h5 class="fw-bold text-dark">Roteiro</h5>
+                    <p class="text-muted small mb-0">{{ trip.itinerary_days.count }} dias planejados</p>
                 </div>
-
-            </a>
-
-        </div>
-
-    </div>
-    <div class="col-md-3">
-
-        <a href="{% url 'finance_dashboard' trip.id %}"
-            class="text-decoration-none">
-
-            <div class="card module-card">
-
-                <div class="card-body">
-
-                    <h5>💰 Financeiro</h5>
-
-                    <h3>
-                        R$ {{ trip.available_balance }}
-                    </h3>
-
-                    <small>
-                        disponível
-                    </small>
-
-                </div>
-
             </div>
-
         </a>
-
     </div>
 
-    <div class="col-md-3">
-
-        <a href="{% url 'document_dashboard' trip.id %}"
-            class="text-decoration-none"
-        >
-
-            <div class="card module-card">
-
-                <div class="card-body">
-
-                    <h5>📄 Documentos</h5>
-
-                    <h3>
-                        {{ trip.documents.count }}
-                    </h3>
-
-                    <small>
-                        arquivos
-                    </small>
-
+    <div class="col-12 col-sm-6 col-xl-3">
+        <a href="{% url 'checklist_list' trip.id %}" class="text-decoration-none">
+            <div class="card module-card h-100 border-0 shadow-sm rounded-4 text-center p-4">
+                <div class="card-body p-0">
+                    <div class="bg-success-subtle text-success rounded-circle d-inline-block p-3 mb-3">
+                        <i class="bi bi-check2-square fs-1"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Checklist</h5>
+                    <p class="text-muted small mb-0">{{ completed_count }}/{{ checklist_count }} itens concluídos</p>
                 </div>
-
             </div>
-
         </a>
-
     </div>
 
-    <div class="col-md-3">
-
-        <div class="card module-card">
-
-            <div class="card-body">
-
-                <h5>🤖 IA</h5>
-
-                <p>Assistente de viagem</p>
-
+    <div class="col-12 col-sm-6 col-xl-3">
+        <a href="{% url 'gallery_dashboard' trip.id %}" class="text-decoration-none">
+            <div class="card module-card h-100 border-0 shadow-sm rounded-4 text-center p-4">
+                <div class="card-body p-0">
+                    <div class="bg-danger-subtle text-danger rounded-circle d-inline-block p-3 mb-3">
+                        <i class="bi bi-images fs-1"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Galeria</h5>
+                    <p class="text-muted small mb-0">{{ trip.photos.count|default:"0" }} memórias guardadas</p>
+                </div>
             </div>
-
-        </div>
-
+        </a>
     </div>
 
-</div>
-<a
-    href="{% url 'itinerary_dashboard' trip.id %}"
-    class="text-decoration-none"
->
-
-    <div class="card module-card">
-
-        <div class="card-body">
-
-            <h5>🗺️ Roteiro</h5>
-
-            <h3>
-                {{ trip.itinerary_days.count }}
-            </h3>
-
-            <small>
-                dias planejados
-            </small>
-
-        </div>
-
-    </div>
-
-</a>
-<div class="card shadow-sm mb-4">
-
-    <div class="card-body">
-
-        <h5>Preparação da Viagem</h5>
-
-        <div class="progress">
-
-            <div
-                class="progress-bar"
-                style="width:{{ trip.preparation_progress }}%"
-            >
-                {{ trip.preparation_progress }}%
+    <div class="col-12 col-sm-6 col-xl-3">
+        <a href="{% url 'finance_dashboard' trip.id %}" class="text-decoration-none">
+            <div class="card module-card h-100 border-0 shadow-sm rounded-4 text-center p-4">
+                <div class="card-body p-0">
+                    <div class="bg-warning-subtle text-warning rounded-circle d-inline-block p-3 mb-3">
+                        <i class="bi bi-currency-dollar fs-1"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Financeiro</h5>
+                    <p class="text-muted small mb-0">R$ {{ trip.available_balance }} disponíveis</p>
+                </div>
             </div>
-
-        </div>
-
+        </a>
     </div>
 
+    <div class="col-12 col-sm-6 col-xl-3">
+        <a href="{% url 'document_dashboard' trip.id %}" class="text-decoration-none">
+            <div class="card module-card h-100 border-0 shadow-sm rounded-4 text-center p-4">
+                <div class="card-body p-0">
+                    <div class="bg-info-subtle text-info rounded-circle d-inline-block p-3 mb-3">
+                        <i class="bi bi-file-earmark-text fs-1"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Documentos</h5>
+                    <p class="text-muted small mb-0">{{ trip.documents.count }} arquivos</p>
+                </div>
+            </div>
+        </a>
+    </div>
 </div>
-
 {% endblock %}

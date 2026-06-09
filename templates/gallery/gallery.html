@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container-fluid py-3 max-w-1200">
+    
+    <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between mb-4 gap-3">
+        <div>
+            <a href="{% url 'trip_detail' trip.id %}" class="text-decoration-none text-muted mb-2 d-inline-block">
+                <i class="bi bi-arrow-left me-1"></i> Voltar para a Viagem
+            </a>
+            <h2 class="fw-bold mb-0 text-dark">
+                <i class="bi bi-images text-primary me-2"></i>Galeria de Fotos
+            </h2>
+            <p class="text-muted fs-5 mb-0">{{ trip.title }}</p>
+        </div>
+        
+        <button type="button" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#uploadPhotoModal">
+            <i class="bi bi-cloud-arrow-up me-2"></i>Adicionar Foto
+        </button>
+    </div>
+
+    <div class="row g-4">
+        {% for photo in photos %}
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden position-relative group-hover">
+                
+                <img src="{{ photo.image.url }}" class="w-100 object-fit-cover" style="height: 250px;" alt="{{ photo.caption }}">
+                
+                <a href="{% url 'toggle_favorite' photo.id %}" class="position-absolute top-0 end-0 m-3 text-decoration-none bg-dark bg-opacity-50 rounded-circle p-2 d-flex align-items-center justify-content-center transition-all hover-scale" style="width: 40px; height: 40px;">
+                    {% if photo.favorite %}
+                        <i class="bi bi-heart-fill text-danger fs-5"></i>
+                    {% else %}
+                        <i class="bi bi-heart text-white fs-5"></i>
+                    {% endif %}
+                </a>
+
+                <div class="card-body p-3">
+                    {% if photo.caption %}
+                        <p class="card-text text-dark fw-medium mb-1">{{ photo.caption }}</p>
+                    {% endif %}
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>{{ photo.taken_at|date:"d/m/Y" }}</small>
+                        
+                        <a href="{% url 'delete_photo' photo.id %}" class="btn btn-sm btn-light text-danger rounded-circle p-2" title="Excluir Foto">
+                            <i class="bi bi-trash3"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        {% empty %}
+        <div class="col-12">
+            <div class="text-center py-5 bg-white rounded-4 shadow-sm border-0 mt-4">
+                <i class="bi bi-camera text-muted" style="font-size: 4rem;"></i>
+                <h5 class="fw-bold mt-3 text-dark">Nenhuma foto adicionada ainda</h5>
+                <p class="text-muted mb-4">Comece a construir o seu álbum de memórias desta viagem.</p>
+                <button type="button" class="btn btn-outline-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#uploadPhotoModal">
+                    <i class="bi bi-cloud-arrow-up me-2"></i>Fazer Primeiro Upload
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<div class="modal fade" id="uploadPhotoModal" tabindex="-1" aria-labelledby="uploadPhotoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+            
+            <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold text-dark" id="uploadPhotoModalLabel">Adicionar Nova Foto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            
+            <form method="post" enctype="multipart/form-data" action="{% url 'gallery_dashboard' trip.id %}">
+                <div class="modal-body px-4 py-3">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                </div>
+                
+                <div class="modal-footer border-top-0 px-4 pb-4 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4 fw-medium" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 fw-medium shadow-sm">
+                        <i class="bi bi-check2 me-1"></i> Salvar Imagem
+                    </button>
+                </div>
+            </form>
+            
+        </div>
+    </div>
+</div>
+
+<style>
+    .object-fit-cover { object-fit: cover; }
+    .transition-all { transition: all 0.3s ease; }
+    .hover-scale:hover { transform: scale(1.1); }
+</style>
+{% endblock %}

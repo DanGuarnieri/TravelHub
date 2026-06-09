@@ -1,94 +1,131 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block content %}
+<div class="container-fluid py-3 max-w-1200">
+    
+    <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between mb-4 gap-3">
+        <div>
+            <a href="{% url 'trip_detail' trip.id %}" class="text-decoration-none text-muted mb-2 d-inline-block">
+                <i class="bi bi-arrow-left me-1"></i> Voltar para a Viagem
+            </a>
+            <h2 class="fw-bold mb-0 text-dark">
+                <i class="bi bi-map text-primary me-2"></i>Roteiro Diário
+            </h2>
+            <p class="text-muted fs-5 mb-0">{{ trip.title }}</p>
+        </div>
+        
+        <button type="button" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#addDayModal">
+            <i class="bi bi-calendar-plus me-2"></i>Adicionar Dia
+        </button>
+    </div>
 
-<h2>🗺️ Roteiro</h2>
+    <div class="accordion" id="itineraryAccordion">
+        {% for day in days %}
+        <div class="accordion-item border-0 shadow-sm rounded-4 mb-3 overflow-hidden">
+            
+            <h2 class="accordion-header">
+                <button class="accordion-button {% if not forloop.first %}collapsed{% endif %} fw-bold fs-5 bg-white text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDay{{ day.id }}">
+                    <i class="bi bi-calendar-event text-primary me-3"></i> Dia {{ forloop.counter }} - {{ day.date|date:"d/m/Y" }}
+                </button>
+            </h2>
+            
+            <div id="collapseDay{{ day.id }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#itineraryAccordion">
+                <div class="accordion-body p-4 bg-light">
+                    
+                    <div class="position-relative border-start border-2 border-primary ms-3 ps-4 mb-4 mt-2">
+                        {% for activity in day.activities.all %}
+                            <div class="mb-3 position-relative">
+                                <div class="position-absolute top-0 start-0 translate-middle bg-primary rounded-circle border border-white border-2" style="width: 16px; height: 16px; margin-left: -24px; margin-top: 12px;"></div>
+                                
+                                <div class="card border-0 shadow-sm rounded-4">
+                                    <div class="card-body p-3 d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="fw-bold mb-1 text-dark">{{ activity.title }}</h6>
+                                            {% if activity.location %}
+                                            <p class="text-muted small mb-0">
+                                                <i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ activity.location }}
+                                            </p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="text-muted fst-italic ms-2 mb-3">
+                                Nenhuma atividade planejada para este dia.
+                            </div>
+                        {% endfor %}
+                    </div>
 
-<h4>{{ trip.title }}</h4>
+                    <button class="btn btn-outline-primary btn-sm rounded-pill px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#addActivityModal{{ day.id }}">
+                        <i class="bi bi-plus-circle me-1"></i> Nova Atividade
+                    </button>
 
-<hr>
-
-<form
-    method="post"
-    action="{% url 'add_day' trip.id %}"
->
-
-    {% csrf_token %}
-
-    {{ day_form.as_p }}
-
-    <button class="btn btn-primary">
-        Adicionar Dia
-    </button>
-
-</form>
-
-<hr>
-
-{% for day in days %}
-
-<div class="card mb-4">
-
-    <div class="card-body">
-
-        <h4>
-            {{ day.date }}
-        </h4>
-
-        {% for activity in day.activities.all %}
-
-            <div class="border p-2 mb-2">
-
-                <strong>
-                    {{ activity.title }}
-                </strong>
-
-                <br>
-
-                📍 {{ activity.location }}
-
+                </div>
             </div>
+        </div>
 
+        <div class="modal fade" id="addActivityModal{{ day.id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content rounded-4 border-0 shadow">
+                    <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
+                        <h5 class="modal-title fw-bold text-dark">Adicionar Atividade</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <form method="post" action="{% url 'add_activity' day.id %}">
+                        <div class="modal-body px-4 py-3">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label class="form-label fw-medium text-muted small">Atividade</label>
+                                <input type="text" name="title" class="form-control form-control-lg rounded-3 fs-6" placeholder="Ex: Visita ao Museu" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-medium text-muted small">Local</label>
+                                <input type="text" name="location" class="form-control form-control-lg rounded-3 fs-6" placeholder="Ex: Louvre, Paris">
+                            </div>
+                        </div>
+                        <div class="modal-footer border-top-0 px-4 pb-4 pt-0">
+                            <button type="button" class="btn btn-light rounded-pill px-4 fw-medium" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary rounded-pill px-4 fw-medium shadow-sm">Adicionar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
         {% empty %}
-
-            <p>
-                Nenhuma atividade.
-            </p>
-
-        {% endfor %}
-
-        <form
-            method="post"
-            action="{% url 'add_activity' day.id %}"
-        >
-
-            {% csrf_token %}
-
-            <input
-                type="text"
-                name="title"
-                placeholder="Atividade"
-                required
-            >
-
-            <input
-                type="text"
-                name="location"
-                placeholder="Local"
-            >
-
-            <button
-                class="btn btn-success"
-            >
-                Adicionar
+        <div class="text-center py-5 bg-white rounded-4 shadow-sm border-0 mt-4">
+            <i class="bi bi-calendar-x text-muted" style="font-size: 4rem;"></i>
+            <h5 class="fw-bold mt-3 text-dark">Nenhum dia adicionado</h5>
+            <p class="text-muted mb-4">Comece a montar o seu roteiro adicionando o primeiro dia da viagem.</p>
+            <button type="button" class="btn btn-outline-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#addDayModal">
+                <i class="bi bi-calendar-plus me-2"></i>Adicionar Primeiro Dia
             </button>
-
-        </form>
-
+        </div>
+        {% endfor %}
     </div>
 
 </div>
 
-{% endfor %}
-
+<div class="modal fade" id="addDayModal" tabindex="-1" aria-labelledby="addDayModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold text-dark" id="addDayModalLabel">Novo Dia de Roteiro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <form method="post" action="{% url 'add_day' trip.id %}">
+                <div class="modal-body px-4 py-3">
+                    {% csrf_token %}
+                    {{ day_form|crispy }}
+                </div>
+                <div class="modal-footer border-top-0 px-4 pb-4 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4 fw-medium" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 fw-medium shadow-sm">Salvar Dia</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

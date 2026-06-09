@@ -1,222 +1,99 @@
-body{
-    background:#f8fafc;
-    font-family:'Segoe UI',sans-serif;
+/* Variáveis Globais */
+:root {
+    --bg-main: #f8fafc;
+    --sidebar-width: 280px;
+    --text-dark: #0f172a;
+    --primary-color: #3b82f6;
 }
 
-.sidebar{
-    width:280px;
-    height:100vh;
-    position:fixed;
-
-    background:linear-gradient(
-        180deg,
-        #0f172a,
-        #1e293b
-    );
-
-    padding:30px;
-
-    border-right:1px solid rgba(255,255,255,.08);
+body {
+    background: var(--bg-main);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--text-dark);
 }
 
-.logo{
+/* Utilitários Extras */
+.max-w-1200 { max-width: 1200px; margin: 0 auto; }
+.bg-dark-gradient { background: linear-gradient(180deg, #0f172a, #1e293b) !important; }
+.bg-light-primary { background-color: rgba(59, 130, 246, 0.1); }
+.text-primary { color: var(--primary-color) !important; }
 
-    color:white;
-
-    font-size:32px;
-
-    font-weight:800;
-
-    letter-spacing:-1px;
-
-    margin-bottom:10px;
-}
-.sidebar a{
-
-    display:block;
-
-    color:#cbd5e1;
-
-    text-decoration:none;
-
-    padding:12px;
-
-    border-radius:10px;
-
-    margin-bottom:5px;
-}
-.sidebar-subtitle{
-
-    color:#94a3b8;
-
-    font-size:14px;
-
-    margin-bottom:35px;
+/* ================== SIDEBAR ================== */
+.sidebar {
+    width: var(--sidebar-width);
+    /* Tiramos o height: 100vh fixo para usar o Offcanvas no mobile e min-height no desktop */
 }
 
-.sidebar a:hover{
-
-    background:#1e293b;
-
-    color:white;
+/* Apenas no Desktop a sidebar fica fixa na esquerda */
+@media (min-width: 768px) {
+    .sidebar {
+        position: fixed;
+        min-height: 100vh;
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .content {
+        margin-left: var(--sidebar-width);
+    }
 }
 
-.content{
-
-    margin-left:280px;
-
-    padding:40px;
+.logo {
+    color: white;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 10px;
 }
 
-.trip-card{
-
-    background:white;
-
-    border-radius:20px;
-
-    overflow:hidden;
-
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
-
-    transition:.3s;
+.sidebar-subtitle {
+    color: #94a3b8;
+    font-size: 14px;
+    margin-bottom: 25px;
 }
 
-.trip-card:hover{
-
-    transform:translateY(-8px);
+.sidebar .nav-link {
+    color: #cbd5e1;
+    border-radius: 10px;
+    padding: 12px 16px;
+    transition: 0.2s ease;
+    font-weight: 500;
 }
 
-.hero-trip{
-
-    position:relative;
-
-    height:420px;
-
-    border-radius:25px;
-
-    overflow:hidden;
-
-    margin-bottom:40px;
-
-    box-shadow:
-    0 15px 40px rgba(0,0,0,.15);
-}
-.hero-trip::after{
-
-    content:"";
-
-    position:absolute;
-
-    inset:0;
-
-    background:
-    linear-gradient(
-        to top,
-        rgba(0,0,0,.7),
-        rgba(0,0,0,.2)
-    );
+.sidebar .nav-link:hover, .sidebar .nav-link.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
 }
 
-.hero-image{
-    width:100%;
-    height:100%;
-    object-fit:cover;
+/* ================== MAIN CONTENT ================== */
+.content {
+    padding: 30px 20px;
 }
 
-.hero-overlay{
-
-    position:absolute;
-
-    left:40px;
-
-    bottom:40px;
-
-    z-index:2;
-
-    color:white;
+@media (min-width: 768px) {
+    .content { padding: 40px; }
 }
 
-.hero-overlay h1{
-
-    font-size:56px;
-
-    font-weight:800;
-
-    margin-bottom:5px;
+/* ================== CARDS & UI COMPONENTS ================== */
+.trip-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
 }
 
-.kpi-card{
-
-    border:none;
-
-    border-radius:20px;
-
-    background:white;
-
-    box-shadow:
-    0 8px 20px rgba(0,0,0,.06);
-
-    transition:.3s;
+.trip-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
 }
 
-.kpi-card:hover{
-
-    transform:translateY(-5px);
+.trip-cover {
+    height: 200px;
+    object-fit: cover;
+    border-top-left-radius: 1rem; /* Combina com rounded-4 do card */
+    border-top-right-radius: 1rem;
 }
 
-.kpi-card h4{
-
-    font-size:32px;
-
-    font-weight:700;
+.kpi-card {
+    transition: transform 0.3s ease;
 }
 
-.module-card{
-
-    background:white;
-
-    border:none;
-
-    border-radius:20px;
-
-    min-height:180px;
-
-    transition:.3s;
-}
-
-.module-card:hover{
-
-    transform:translateY(-6px);
-
-    box-shadow:
-    0 10px 30px rgba(0,0,0,.08);
-}
-
-.hero-badge{
-    background:rgba(255,255,255,.2);
-    padding:8px 16px;
-    border-radius:999px;
-    backdrop-filter:blur(10px);
-}
-
-.hero-meta{
-    display:flex;
-    gap:20px;
-    margin-top:15px;
-}
-.module-icon{
-    font-size:42px;
-    margin-bottom:15px;
-}
-
-.page-header{
-
-    margin-bottom:40px;
-}
-
-.page-header h1{
-
-    font-size:42px;
-
-    font-weight:800;
+.kpi-card:hover {
+    transform: translateY(-5px);
 }

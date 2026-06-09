@@ -1,86 +1,88 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %} 
 
 {% block content %}
-
-<h2>
-    📋 Checklist
-</h2>
-
-<h5>
-    {{ trip.title }}
-</h5>
-
-<hr>
-
-<form
-    method="post"
-    action="{% url 'add_checklist_item' trip.id %}"
->
-
-    {% csrf_token %}
-
-    {{ form }}
-
-    <button
-        class="btn btn-primary"
-    >
-        Adicionar
-    </button>
-
-</form>
-
-<hr>
-
-{% for item in items %}
-
-<div
-    class="card mb-2"
->
-
-    <div
-        class="card-body d-flex justify-content-between"
-    >
-
+<div class="container-fluid py-3 max-w-1200">
+    
+    <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between mb-4 gap-3">
         <div>
-
-            {% if item.completed %}
-                ✅
-            {% else %}
-                ⬜
-            {% endif %}
-
-            {{ item.title }}
-
-        </div>
-
-        <div>
-
-            <a
-                class="btn btn-success btn-sm"
-                href="{% url 'toggle_checklist_item' item.id %}"
-            >
-                Alternar
+            <a href="{% url 'trip_detail' trip.id %}" class="text-decoration-none text-muted mb-2 d-inline-block">
+                <i class="bi bi-arrow-left me-1"></i> Voltar para a Viagem
             </a>
-
-            <a
-                class="btn btn-danger btn-sm"
-                href="{% url 'delete_checklist_item' item.id %}"
-            >
-                Excluir
-            </a>
-
+            <h2 class="fw-bold mb-0 text-dark">
+                <i class="bi bi-check2-square text-success me-2"></i>Checklist
+            </h2>
+            <p class="text-muted fs-5 mb-0">{{ trip.title }}</p>
         </div>
+        
+        <button type="button" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#addChecklistModal">
+            <i class="bi bi-plus-lg me-2"></i>Novo Item
+        </button>
+    </div>
 
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <ul class="list-group list-group-flush">
+            {% for item in items %}
+                <li class="list-group-item d-flex justify-content-between align-items-center p-3 p-md-4">
+                    
+                    <div class="d-flex align-items-center gap-3">
+                        <a href="{% url 'toggle_checklist_item' item.id %}" class="text-decoration-none">
+                            {% if item.completed %}
+                                <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                            {% else %}
+                                <i class="bi bi-circle text-secondary fs-4"></i>
+                            {% endif %}
+                        </a>
+                        
+                        <span class="fs-5 {% if item.completed %}text-muted text-decoration-line-through{% else %}text-dark fw-medium{% endif %}">
+                            {{ item.title }}
+                        </span>
+                    </div>
+
+                    <a href="{% url 'delete_checklist_item' item.id %}" class="btn btn-light btn-sm text-danger rounded-circle p-2 ms-3" title="Excluir Item">
+                        <i class="bi bi-trash3"></i>
+                    </a>
+                    
+                </li>
+            {% empty %}
+                <div class="text-center py-5">
+                    <i class="bi bi-ui-checks text-muted" style="font-size: 4rem;"></i>
+                    <h5 class="fw-bold mt-3 text-dark">Nenhum item na lista</h5>
+                    <p class="text-muted mb-4">Que tal começar a organizar o que você precisa levar?</p>
+                    <button type="button" class="btn btn-outline-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#addChecklistModal">
+                        Adicionar Primeiro Item
+                    </button>
+                </div>
+            {% endfor %}
+        </ul>
     </div>
 
 </div>
 
-{% empty %}
-
-<p>
-    Nenhum item cadastrado.
-</p>
-
-{% endfor %}
-
+<div class="modal fade" id="addChecklistModal" tabindex="-1" aria-labelledby="addChecklistModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+            
+            <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold text-dark" id="addChecklistModalLabel">Adicionar ao Checklist</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            
+            <form method="post" action="{% url 'add_checklist_item' trip.id %}">
+                <div class="modal-body px-4 py-3">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                </div>
+                
+                <div class="modal-footer border-top-0 px-4 pb-4 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4 fw-medium" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 fw-medium shadow-sm">
+                        <i class="bi bi-check2 me-1"></i> Salvar
+                    </button>
+                </div>
+            </form>
+            
+        </div>
+    </div>
+</div>
 {% endblock %}

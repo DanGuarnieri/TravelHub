@@ -1,161 +1,201 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %} 
 
 {% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<h2>
-    💰 Financeiro
-</h2>
+<div class="container-fluid py-3 max-w-1200">
+    
+    <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between mb-4 gap-3">
+        <div>
+            <a href="{% url 'trip_detail' trip.id %}" class="text-decoration-none text-muted mb-2 d-inline-block">
+                <i class="bi bi-arrow-left me-1"></i> Voltar para a Viagem
+            </a>
+            <h2 class="fw-bold mb-0 text-dark">
+                <i class="bi bi-wallet2 text-success me-2"></i>Financeiro
+            </h2>
+            <p class="text-muted fs-5 mb-0">{{ trip.title }}</p>
+        </div>
+        
+        <button type="button" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#addTransactionModal">
+            <i class="bi bi-plus-lg me-2"></i>Nova Transação
+        </button>
+    </div>
 
-<h4>
-    {{ trip.title }}
-</h4>
-
-<hr>
-
-<div class="row mb-4">
-
-    <div class="col-md-4">
-
-        <div class="card">
-
-            <div class="card-body">
-
-                <h6>Entradas</h6>
-
-                <h3>
-                    R$ {{ trip.total_income }}
-                </h3>
-
+    <div class="row g-4 mb-5">
+        
+        <div class="col-12 col-lg-5">
+            <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+                <div class="card-body p-4 d-flex flex-column align-items-center justify-content-center">
+                    <h6 class="fw-bold text-muted text-uppercase mb-3 align-self-start">Gastos por Categoria</h6>
+                    
+                    {% if chart_data %}
+                        <div style="width: 250px; height: 250px;">
+                            <canvas id="expenseChart"></canvas>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-pie-chart text-muted fs-1 mb-2 d-block"></i>
+                            <p class="text-muted small">Adicione despesas para ver o gráfico.</p>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
+        </div>
 
+        <div class="col-12 col-lg-7">
+            <div class="row g-4 h-100">
+                <div class="col-12 col-sm-6">
+                    <div class="card border-0 shadow-sm rounded-4 h-100 bg-success text-white">
+                        <div class="card-body p-4 d-flex flex-column justify-content-center">
+                            <h6 class="text-white-50 text-uppercase fw-semibold mb-1">Entradas</h6>
+                            <h2 class="fw-bold mb-0">R$ {{ trip.total_income }}</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6">
+                    <div class="card border-0 shadow-sm rounded-4 h-100 bg-danger text-white">
+                        <div class="card-body p-4 d-flex flex-column justify-content-center">
+                            <h6 class="text-white-50 text-uppercase fw-semibold mb-1">Saídas Totais</h6>
+                            <h2 class="fw-bold mb-0">R$ {{ trip.total_expense }}</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm rounded-4 h-100 bg-primary text-white">
+                        <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-white-50 text-uppercase fw-semibold mb-1">Saldo Disponível</h6>
+                                <h2 class="fw-bold mb-0">R$ {{ trip.available_balance }}</h2>
+                            </div>
+                            <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                                <i class="bi bi-piggy-bank fs-2"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
 
-    <div class="col-md-4">
-
-        <div class="card">
-
-            <div class="card-body">
-
-                <h6>Saídas</h6>
-
-                <h3>
-                    R$ {{ trip.total_expense }}
-                </h3>
-
-            </div>
-
+    <h5 class="fw-bold mb-3">Histórico de Transações</h5>
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-5">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="py-3 px-4 border-bottom-0 text-muted fw-semibold">Tipo</th>
+                        <th class="py-3 px-4 border-bottom-0 text-muted fw-semibold">Categoria</th>
+                        <th class="py-3 px-4 border-bottom-0 text-muted fw-semibold">Descrição</th>
+                        <th class="py-3 px-4 border-bottom-0 text-muted fw-semibold">Data</th>
+                        <th class="py-3 px-4 border-bottom-0 text-muted fw-semibold text-end">Valor</th>
+                        <th class="py-3 px-4 border-bottom-0 text-muted fw-semibold text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for transaction in transactions %}
+                    <tr>
+                        <td class="py-3 px-4">
+                            {% if transaction.transaction_type == 'Entrada' or transaction.transaction_type == 'income' %}
+                                <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2"><i class="bi bi-arrow-down me-1"></i>Entrada</span>
+                            {% else %}
+                                <span class="badge bg-danger-subtle text-danger rounded-pill px-3 py-2"><i class="bi bi-arrow-up me-1"></i>Saída</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3 px-4 text-muted fw-medium">{{ transaction.category }}</td>
+                        <td class="py-3 px-4 fw-medium text-dark">{{ transaction.description }}</td>
+                        <td class="py-3 px-4 text-muted small">{{ transaction.transaction_date|date:"d/m/Y" }}</td>
+                        <td class="py-3 px-4 text-end fw-bold {% if transaction.transaction_type == 'Entrada' or transaction.transaction_type == 'income' %}text-success{% else %}text-danger{% endif %}">
+                            R$ {{ transaction.amount }}
+                        </td>
+                        <td class="py-3 px-4 text-center">
+                            <a href="{% url 'delete_transaction' transaction.id %}" class="btn btn-sm btn-light text-danger rounded-circle p-2" title="Excluir Transação">
+                                <i class="bi bi-trash3"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            <i class="bi bi-receipt fs-1 d-block mb-2"></i>
+                            Nenhuma movimentação financeira registrada ainda.
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
-
-    </div>
-
-    <div class="col-md-4">
-
-        <div class="card">
-
-            <div class="card-body">
-
-                <h6>Saldo</h6>
-
-                <h3>
-                    R$ {{ trip.available_balance }}
-                </h3>
-
-            </div>
-
-        </div>
-
     </div>
 
 </div>
 
-<hr>
+<div class="modal fade" id="addTransactionModal" tabindex="-1" aria-labelledby="addTransactionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+            
+            <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold text-dark" id="addTransactionModalLabel">Registrar Transação</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            
+            <form method="post" action="{% url 'add_transaction' trip.id %}">
+                <div class="modal-body px-4 py-3">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                </div>
+                
+                <div class="modal-footer border-top-0 px-4 pb-4 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4 fw-medium" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 fw-medium shadow-sm">
+                        <i class="bi bi-check2 me-1"></i> Salvar
+                    </button>
+                </div>
+            </form>
+            
+        </div>
+    </div>
+</div>
 
-<form
-    method="post"
-    action="{% url 'add_transaction' trip.id %}"
->
-
-    {% csrf_token %}
-
-    {{ form.as_p }}
-
-    <button
-        class="btn btn-primary"
-    >
-        Adicionar
-    </button>
-
-</form>
-
-<hr>
-
-<table class="table">
-
-    <thead>
-
-        <tr>
-
-            <th>Tipo</th>
-
-            <th>Categoria</th>
-
-            <th>Descrição</th>
-
-            <th>Valor</th>
-
-            <th>Data</th>
-
-            <th></th>
-
-        </tr>
-
-    </thead>
-
-    <tbody>
-
-    {% for transaction in transactions %}
-
-        <tr>
-
-            <td>
-                {{ transaction.transaction_type }}
-            </td>
-
-            <td>
-                {{ transaction.category }}
-            </td>
-
-            <td>
-                {{ transaction.description }}
-            </td>
-
-            <td>
-                R$ {{ transaction.amount }}
-            </td>
-
-            <td>
-                {{ transaction.transaction_date }}
-            </td>
-
-            <td>
-
-                <a
-                    href="{% url 'delete_transaction' transaction.id %}"
-                    class="btn btn-danger btn-sm"
-                >
-                    Excluir
-                </a>
-
-            </td>
-
-        </tr>
-
-    {% endfor %}
-
-    </tbody>
-
-</table>
+{% if chart_data %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const ctx = document.getElementById('expenseChart').getContext('2d');
+        const expenseChart = new Chart(ctx, {
+            type: 'doughnut', // Gráfico circular estilo anel
+            data: {
+                labels: {{ chart_labels|safe }},
+                datasets: [{
+                    data: {{ chart_data|safe }},
+                    backgroundColor: [
+                        '#ff6b6b', '#4ecdc4', '#f9ca24', '#6c5ce7', '#a55eea', '#ff9f43', '#54a0ff'
+                    ],
+                    borderWidth: 0, 
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: {
+                                family: "'Segoe UI', system-ui, sans-serif"
+                            }
+                        }
+                    }
+                },
+                cutout: '70%' // Deixa o anel mais fino e elegante
+            }
+        });
+    });
+</script>
+{% endif %}
 
 {% endblock %}

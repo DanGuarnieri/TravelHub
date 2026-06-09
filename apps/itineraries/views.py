@@ -3,7 +3,7 @@ from django.shortcuts import (
     redirect,
     get_object_or_404
 )
-
+from django.contrib.auth.decorators import login_required
 from apps.trips.models import Trip
 
 from .models import (
@@ -15,7 +15,7 @@ from .forms import (
     ItineraryDayForm,
     ActivityForm
 )
-
+@login_required
 def itinerary_dashboard(
     request,
     trip_id
@@ -41,7 +41,7 @@ def itinerary_dashboard(
         "itineraries/dashboard.html",
         context
     )
-
+@login_required
 def add_day(
     request,
     trip_id
@@ -72,7 +72,7 @@ def add_day(
         "itinerary_dashboard",
         trip_id=trip.id
     )
-
+@login_required
 def add_activity(
     request,
     day_id

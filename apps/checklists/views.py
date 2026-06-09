@@ -6,9 +6,10 @@ from django.shortcuts import (
 
 from .forms import ChecklistItemForm
 from .models import ChecklistItem
-
+from django.contrib.auth.decorators import login_required
 from apps.trips.models import Trip
 
+@login_required
 def checklist_list(request, trip_id):
 
     trip = get_object_or_404(
@@ -31,7 +32,7 @@ def checklist_list(request, trip_id):
         "checklists/list.html",
         context
     )
-
+@login_required
 def add_checklist_item(request, trip_id):
 
     trip = get_object_or_404(
@@ -55,7 +56,7 @@ def add_checklist_item(request, trip_id):
         "checklist_list",
         trip_id=trip.id
     )
-
+@login_required
 def toggle_checklist_item(
     request,
     item_id
@@ -74,7 +75,7 @@ def toggle_checklist_item(
         "checklist_list",
         trip_id=item.trip.id
     )
-
+@login_required
 def delete_checklist_item(
     request,
     item_id

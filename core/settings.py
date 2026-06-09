@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "rest_framework",
+    'crispy_forms',
+    'crispy_bootstrap5',
     
     "apps.checklists",
     "apps.accounts",
@@ -139,4 +141,23 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-AUTH_USER_MODEL = "accounts.User"
+# settings.py
+AUTH_USER_MODEL = 'accounts.User'
+
+# Configurações do Crispy Forms
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+
+# ==========================================
+# CONFIGURAÇÕES DE AUTENTICAÇÃO
+# ==========================================
+
+# Para onde o @login_required deve mandar os usuários não logados:
+LOGIN_URL = 'login' 
+
+# Para onde o Django deve mandar o usuário logo após ele fazer o login com sucesso (caso a view não faça isso explicitamente):
+LOGIN_REDIRECT_URL = 'dashboard' 
+
+# Para onde o Django deve mandar o usuário após ele clicar em "Sair":
+LOGOUT_REDIRECT_URL = 'login'
